@@ -1,0 +1,56 @@
+Nume: Rusu Alina
+Grupa: 331CC
+
+Tema 2 - Algoritmi paraleli si distribuiti
+
+Cuprins:
+	1. Continutul arhivei
+	2. Utilizare
+	3. Implementare
+	4. Ierarhia de clase
+	5. Note
+	
+1. Continutul arhivei:
+Arhiva contine numai fisierele sursa .java, dupa cum urmeaza:
+	PlagiatChecker.java
+	Solution.java
+	MapSolution.java
+	ReducePhaseOneSolution.java
+	ReducePhaseTwoSolution.java
+	Worker.java
+	WorkPool.java
+	
+2. Utilizare:
+Programul primeste ca parametri de intrare 
+	[NUMAR_THREADURI] [FISIER_INTRARE] [FISIER_IESIRE]
+	
+3. Implementare:
+Tema a fost implementata in Java, folosind modelul replicated workers, preluat
+din laboratorul de la facultate asupra caruia am adus unele imbunatatiri.		
+In linii mari algoritmul ar fi urmatorul:
+MAP: Se pornesc $NUMAR_THREADURI threaduri care in aceasta etapa proceseaza
+task-urile de tip MapSolution. Aceste task-uri sunt create in threadul master,
+si puse si coada de $unfinishedTasks. Fiecare worker, pune inapoi in coada
+$finishedTasks task-urile prelucrate. Acestea contin un HashMap de tipul:
+(CUVANT, NUMAR_APARITII).
+REDUCE_PART1. In prima parte a etapei de reduce, se combina rezultatele obtinu-
+te anterior, generandu-se un HashMap de tipul (CUVANT, FRECVENTA).
+REDUCE_PART2. In cea de-a doua etapa de reduce, sunt creeate de catre threadul
+master, task-uri care contin HashMap-urile obtinute la pasul anterior. 
+Cele doua HashMap-uri sunt apoi combinate, obtinandu-se vocabularul complet,
+iar apoi se aplica formula din enunt si se calculeaza similitudinea dintre cele
+doua fisiere.
+
+4. Ierarhia de clase
+	PlagiatChecker
+	Worker
+	WorkPool
+	Solution (abstract)
+		MapSolution
+		ReducePhaseOneSolution
+		ReducePhaseTwoSolution
+		
+5. Note:
+Am observat faptul ca programul calculeaza similitudini diferite in functie de
+metoda de parsare a bucatilor de 500 bytes.
+Modalitatea pe care am ales-o eu, este split folosind expresia ("[^a-zA-Z]").
